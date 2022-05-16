@@ -124,7 +124,8 @@ export default function Home() {
                         </p>
                       </div>
                       <p className="font-thin">
-                        I developed React Native applications
+                        Currently working as Senior Frontend Dev. Work with
+                        ReactJS and Typescript
                       </p>
                     </li>
                   </ul>
@@ -164,7 +165,7 @@ export default function Home() {
               </div>
               <div className="flex justify-center">
                 <div className="h-36 w-36 bg-indigo-700 rounded-full flex items-center justify-center">
-                  <p className="font-bold text-xl">Webpack</p>
+                  <p className="font-bold text-xl">Webpack/Rollup</p>
                 </div>
               </div>
               <div className="flex justify-center">
