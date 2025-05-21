@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Rubik, Noto_Serif } from "next/font/google";
+import Link from "next/link";
+import clsx from "clsx";
+
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const rubik = Rubik({
   subsets: ["latin"],
+  weight: "variable",
+  variable: "--font-rubik",
+  fallback: ["sans-serif"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const notoSans = Noto_Serif({
   subsets: ["latin"],
+  variable: "--font-noto-serif",
+  fallback: ["sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -25,9 +31,32 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={clsx(
+          "antialiased",
+          "font-sans",
+          rubik.variable,
+          notoSans.variable
+        )}
       >
-        {children}
+        <div className="mx-auto container px-6 max-w-2xl md:px-0 py-12 md:py-24">
+          <header className="mb-12">
+            <nav className="font-sans">
+              <ul className="flex gap-4">
+                <li>
+                  <Link className="text-base" href="/">
+                    about me
+                  </Link>
+                </li>
+                <li>
+                  <Link className="text-base" href="/blog">
+                    blog
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </header>
+          {children}
+        </div>
       </body>
     </html>
   );
