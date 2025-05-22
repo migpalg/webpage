@@ -114,7 +114,19 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
       return (
         <div className="bg-zinc-900 rounded-md overflow-hidden text-sm my-4">
-          <span className="block border-b-2 border-indigo-500 bg-zinc-800 font-sans px-4 py-2 uppercase">
+          <span
+            className={clsx(
+              "block",
+              "border-b-2",
+              "border-indigo-500",
+              "bg-zinc-800",
+              "text-zinc-50",
+              "font-sans",
+              "px-4",
+              "py-2",
+              "uppercase",
+            )}
+          >
             {language}
           </span>
           <div className="font-mono p-4">
