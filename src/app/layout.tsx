@@ -34,6 +34,8 @@ export default function RootLayout({
         className={clsx(
           "antialiased",
           "font-sans",
+          "dark:bg-zinc-950",
+          "dark:text-neutral-200",
           rubik.variable,
           notoSans.variable
         )}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PostEntry } from "@/components/post-entry";
 import { getBlogPosts } from "./utils";
 
 export const metadata = {
@@ -11,22 +12,25 @@ export default async function Blog() {
 
   return (
     <div>
-      <h2 className="text-6xl font-black mb-4 font-serif">Blog!</h2>
-      <p className="text-base/7 mb-2 font-sans">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias
-        atque accusantium accusamus necessitatibus saepe nobis nam quia placeat
-        earum adipisci, officiis cum doloribus esse voluptas, animi quidem magni
-        numquam dicta?
+      <h2 className="text-6xl font-black mb-4 font-serif decoration-solid">
+        Blog!
+      </h2>
+
+      <p className="text-sm/8 font-sans mb-2 opacity-50">
+        Some things that have been around my head
       </p>
-      {posts.map(({ slug, metadata }) => (
-        <div key={slug} className="mb-4">
-          <h3 className="text-2xl font-bold mb-2 font-serif">
-            <Link href={`/blog/${slug}`}>{metadata.title}</Link>
-          </h3>
-          <p className="text-base/7 mb-2 font-sans">{metadata.description}</p>
-          <p className="text-sm font-sans text-gray-500">{metadata.date}</p>
-        </div>
-      ))}
+
+      <div className="flex flex-col mt-12">
+        {posts.map(({ slug, metadata }) => (
+          <PostEntry
+            key={slug}
+            slug={slug}
+            title={metadata.title}
+            description={metadata.description}
+            date={metadata.date}
+          />
+        ))}
+      </div>
     </div>
   );
 }
