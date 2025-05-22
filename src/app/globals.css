@@ -3,4 +3,5 @@
 @theme {
   --font-sans: "Rubik", sans-serif;
   --font-serif: "Noto Serif", serif;
+  --font-mono: "Fira Code", monospace;
 }

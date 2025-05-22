@@ -107,34 +107,67 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         )}
       />
     ),
-    code: ({ children, className, ...props }) => {
-      const match = /language-(\w+)/.exec(className || "");
+    pre: ({ children, ...props }) => {
+      const className = children.props.className || "";
+      const code = children.props.children.trim();
+      const language = className.replace(/language-/, "");
 
       return (
-        <div className="bg-zinc-900 rounded-2xl text-sm py-4 px-6 my-4">
-          <Highlighter
-            language={match?.[1]}
-            PreTag="div"
-            customStyle={{
-              backgroundColor: "transparent",
-              fontFamily: "inherit",
-              margin: 0,
-              padding: 0,
-            }}
-            codeTagProps={{
-              style: { backgroundColor: "transparent", fontFamily: "inherit" },
-            }}
-            style={oneDark}
-            {...props}
-          >
-            {children}
-          </Highlighter>
+        <div className="bg-zinc-900 rounded-md overflow-hidden text-sm my-4">
+          <span className="block border-b-2 border-indigo-500 bg-zinc-800 font-sans px-4 py-2 uppercase">
+            {language}
+          </span>
+          <div className="font-mono p-4">
+            <Highlighter
+              language={language}
+              customStyle={{
+                backgroundColor: "transparent",
+                fontFamily: "inherit",
+                margin: 0,
+                padding: 0,
+              }}
+              codeTagProps={{
+                style: {
+                  backgroundColor: "transparent",
+                  fontFamily: "inherit",
+                },
+              }}
+              style={oneDark}
+              {...props}
+            >
+              {code}
+            </Highlighter>
+          </div>
         </div>
       );
     },
+
+    code: (props) => (
+      <code
+        {...props}
+        className={clsx(
+          "dark:bg-zinc-800",
+          "dark:text-zinc-50",
+          "bg-indigo-200",
+          "text-indigo-950",
+          "font-bold",
+          "px-2",
+          "rounded-md",
+          props.className,
+        )}
+      />
+    ),
     ul: (props) => (
       <ul {...props} className={clsx("list-disc pl-12", props.className)} />
     ),
-    li: (props) => <li {...props} className={clsx("my-2", props.className)} />,
+    li: (props) => (
+      <li {...props} className={clsx("my-4 text-base/8", props.className)} />
+    ),
+    ol: (props) => (
+      <ol
+        {...props}
+        className={clsx("list-[upper-roman] pl-12", props.className)}
+      />
+    ),
   };
 }

@@ -8,7 +8,7 @@ export async function getBlogPosts() {
   const files = await fs.readdir(BLOG_CONTENT_PATH);
   const mdxFiles = files.filter((file) => file.endsWith(".mdx"));
 
-  return await Promise.all(
+  const posts = await Promise.all(
     mdxFiles.map(async (fileName) => {
       const slug = path.basename(fileName, path.extname(fileName));
       const contents = await fs.readFile(
@@ -24,4 +24,11 @@ export async function getBlogPosts() {
       };
     }),
   );
+
+  return posts.sort((a, b) => {
+    const dateA = new Date(a.metadata.date);
+    const dateB = new Date(b.metadata.date);
+
+    return dateB.getTime() - dateA.getTime();
+  });
 }

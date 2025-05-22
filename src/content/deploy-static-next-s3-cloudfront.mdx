@@ -1,0 +1,113 @@
+---
+title: "Fix AccessDenied error when deploying a static Next.js app to S3 and CloudFront"
+date: "2025-05-22"
+description: "This post explains how to fix AccessDenied errors when navigating to different routes in a static Next.js app deployed to S3 and CloudFront."
+author: "Miguel González"
+tags:
+  - "nextjs"
+  - "aws"
+  - "s3"
+  - "cloudfront"
+  - "terraform"
+  - "iac"
+---
+
+First time I deployed this blog I ran into some issues. After setting up some
+terraform code to deploy a static Next.js app to S3 and CloudFront and did my
+first deployment, I went directly to the cloudfront URL and everything seems to
+be working just fine! But when I tried to reload the page in a different route different
+from the home page, I got this error:
+
+```xml
+<Error>
+  <Code>AccessDenied</Code>
+  <Message>Access Denied</Message>
+  <RequestId>...</RequestId>
+  <HostId>...</HostId>
+</Error>
+```
+
+I almost cried. I thought I had done something wrong with the terraform code, but
+after some debugging I found out that the problem was how CloudFront works:
+
+1. When you deploy a static Next.js app, the app is built and the static files are
+   generated in the `out` directory.
+2. When you deploy the app to S3, the files are uploaded to a bucket.
+3. When you access the app through CloudFront, it tries to fetch the files from
+   the S3 bucket.
+4. If you access the app through the root URL, CloudFront fetches the `index.html`
+   file from the S3 bucket and everything works fine.
+5. If you access the app through a different route, CloudFront tries to fetch the
+   file from the S3 bucket, but it doesn't exist. For example, if you access
+   `https://example.com/about`, CloudFront tries to fetch `about` (without any extension)
+   from the S3 bucket, but it doesn't exist. This is because Next.js uses client-side
+   routing and the files are generated in the `out` directory.
+
+## How to fix it
+
+To fix this, and not leverage on client-side routing (Fallback to `index.html`),
+we need to add an AWS CloudFront function to rewrite the URL and point to the
+generated `.html` file.
+
+This is the function that I used:
+
+```js
+function handler(event) {
+  var request = event.request;
+  var uri = request.uri;
+
+  // If the URI doesn't end with a file extension and doesn't end with a slash
+  if (!uri.includes(".") && !uri.endsWith("/")) {
+    // Append .html to the URI
+    request.uri = uri + ".html";
+  }
+  // If it ends with a slash, remove it and add .html extension
+  else if (uri.endsWith("/") && uri !== "/") {
+    request.uri = uri.slice(0, -1) + ".html";
+  }
+
+  return request;
+}
+```
+
+You can add this function to your CloudFront distribution using the AWS console, AWS CLI,
+or Terraform. If you want to add it using Terraform, you can use the following resource:
+
+```hcl
+resource "aws_cloudfront_function" "rewrite_uri" {
+  name    = "rewrite-uri"
+  runtime = "cloudfront-js-1.0"
+  comment = "Rewrite URLs to append .html when needed"
+  publish = true
+  code    = <<-EOT
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // If the URI doesn't end with a file extension and doesn't end with a slash
+    if (!uri.includes('.') && !uri.endsWith('/')) {
+        // Append .html to the URI
+        request.uri = uri + '.html';
+    }
+    // If it ends with a slash, remove it and append .html
+    else if (uri.endsWith('/') && uri !== '/') {
+      request.uri = uri.slice(0, -1) + '.html';
+    }
+
+    return request;
+}
+EOT
+}
+```
+
+Then you'll be able to deploy and access your static Next.js routes without any issues
+and without using client-side routing.
+
+## Why not use client-side routing?
+
+Using client-side routing will limit the SEO capabilities of your app. If you want
+to have a static site that is SEO friendly, you need to use server-side rendering or
+static site generation. This is because search engines need to be able to crawl
+your site and index the pages. If you use client-side routing, the search engines
+won't be able to see the pages and won't be able to index them. This will result
+in a lower ranking in search results and less traffic to your site.

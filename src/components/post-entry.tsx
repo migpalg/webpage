@@ -23,7 +23,7 @@ export const PostEntry = ({
       "py-8",
     )}
   >
-    <h3 className={clsx("text-xl", "font-bold", "mb-2", "font-serif")}>
+    <h3 className={clsx("text-xl/8", "font-bold", "mb-4", "font-serif")}>
       <Link href={`/blog/${slug}`}>{title}</Link>
     </h3>
     <p className={clsx("text-sm/8", "mb-2", "font-sans")}>{description}</p>

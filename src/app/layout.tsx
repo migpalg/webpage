@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import type { Metadata } from "next";
-import { Noto_Serif, Rubik } from "next/font/google";
+import { Noto_Serif, Rubik, Fira_Code } from "next/font/google";
 import Link from "next/link";
 
 import "./globals.css";
@@ -16,6 +16,13 @@ const notoSans = Noto_Serif({
   subsets: ["latin"],
   variable: "--font-noto-serif",
   fallback: ["sans-serif"],
+});
+
+const firaCode = Fira_Code({
+  subsets: ["latin"],
+  weight: "variable",
+  variable: "--font-fira-code",
+  fallback: ["monospace"],
 });
 
 export const metadata: Metadata = {
