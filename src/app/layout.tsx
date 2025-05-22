@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { Rubik, Noto_Serif } from "next/font/google";
-import Link from "next/link";
 import clsx from "clsx";
+import type { Metadata } from "next";
+import { Noto_Serif, Rubik } from "next/font/google";
+import Link from "next/link";
 
 import "./globals.css";
 
@@ -37,7 +37,7 @@ export default function RootLayout({
           "dark:bg-zinc-950",
           "dark:text-neutral-200",
           rubik.variable,
-          notoSans.variable
+          notoSans.variable,
         )}
       >
         <div className="mx-auto container px-6 max-w-2xl md:px-0 py-12 md:py-24">

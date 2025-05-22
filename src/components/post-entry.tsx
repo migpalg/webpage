@@ -20,7 +20,7 @@ export const PostEntry = ({
       "dark:border-zinc-100/30",
       "border-b",
       "border-dotted",
-      "py-8"
+      "py-8",
     )}
   >
     <h3 className={clsx("text-xl", "font-bold", "mb-2", "font-serif")}>

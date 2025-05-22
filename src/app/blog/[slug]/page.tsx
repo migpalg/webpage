@@ -1,6 +1,15 @@
-import Link from "next/link";
 import clsx from "clsx";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { getBlogPosts } from "../utils";
+
+type PostParams = {
+  slug: string;
+};
+
+type PostProps = {
+  params: Promise<PostParams>;
+};
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -10,13 +19,17 @@ export async function generateStaticParams() {
   }));
 }
 
-type PostParams = {
-  slug: string;
-};
+export async function generateMetadata({
+  params,
+}: PostProps): Promise<Metadata> {
+  const { slug } = await params;
+  const { frontmatter } = await import(`@/content/${slug}.mdx`);
 
-type PostProps = {
-  params: Promise<PostParams>;
-};
+  return {
+    title: `Blog | ${frontmatter.title}`,
+    description: frontmatter.description,
+  };
+}
 
 export default async function Post({ params }: PostProps) {
   const { slug } = await params;
@@ -37,37 +50,40 @@ export default async function Post({ params }: PostProps) {
           "before:pr-2",
           "before:opacity-50",
           "before:font-bold",
-          "transition-opacity"
+          "transition-opacity",
         )}
       >
         back to posts list
       </Link>
 
-      <h2 className="text-6xl font-black mb-4 font-serif">
-        {frontmatter.title}
-      </h2>
-      <p>{frontmatter.author}</p>
+      <main>
+        <h2 className="text-6xl font-black mb-2 font-serif">
+          {frontmatter.title}
+        </h2>
+        <p className="text-lg text-gray-500">{frontmatter.author}</p>
 
-      <Post />
-
-      <div className="flex gap-2 mt-8">
-        {frontmatter.tags?.map((tag: string) => (
-          <span
-            key={tag}
-            className={clsx(
-              "text-sm",
-              "font-sans",
-              "px-4",
-              "select-none",
-              "py-1",
-              "rounded-full",
-              "border-1"
-            )}
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
+        <div className="py-12">
+          <Post />
+        </div>
+        <div className="flex gap-2 mt-8">
+          {frontmatter.tags?.map((tag: string) => (
+            <span
+              key={tag}
+              className={clsx(
+                "text-sm",
+                "font-sans",
+                "px-4",
+                "select-none",
+                "py-1",
+                "rounded-full",
+                "border-1",
+              )}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }

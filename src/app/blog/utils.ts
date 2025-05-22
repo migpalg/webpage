@@ -1,5 +1,5 @@
-import path from "node:path";
 import fs from "node:fs/promises";
+import path from "node:path";
 import matter from "gray-matter";
 
 const BLOG_CONTENT_PATH = path.join(process.cwd(), "src", "content");
@@ -13,7 +13,7 @@ export async function getBlogPosts() {
       const slug = path.basename(fileName, path.extname(fileName));
       const contents = await fs.readFile(
         path.join(BLOG_CONTENT_PATH, fileName),
-        "utf-8"
+        "utf-8",
       );
 
       const { data } = matter(contents);
@@ -22,6 +22,6 @@ export async function getBlogPosts() {
         slug,
         metadata: data,
       };
-    })
+    }),
   );
 }

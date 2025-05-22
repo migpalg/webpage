@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { PostEntry } from "@/components/post-entry";
 import { getBlogPosts } from "./utils";
 
